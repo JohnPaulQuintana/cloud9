@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eastwoods College Graduation Ball. </title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./game-style.css">
+  <link rel="stylesheet" href="./popup.css">
+  <!-- <link rel="stylesheet" href="./winner.css"> -->
+</head>
+<body>
+  <div class="back">
+    <div class="container" style="width: 35%;">
+      <h1>Welcome to cloud9 control!</h1>
+      <p><b>You need to choose a number and try to win a money as possible.</b></p>
+      <button id="startGame">Start Game</button>
+      <button id="resetGame" >Reset Game</button>
+    </div>
+    <div class="grid-container" id="gameArea">
+      <!-- Boxes will be populated here -->
+    </div>
+  </div>
+
+  <!-- Custom popup for "Open" or "Change" choice -->
+  <div class="popup-container" id="popupContainer">
+    <div class="popup">
+      <h2 style="color: rgb(16, 151, 241);">Lucky Number!</h2>
+      <div class="grid-item" id="open"  style="height: 6em; width: 6em; margin: auto; margin-top: 10px;">
+         <h1 id="content"></h1>
+         <img id="price" src="" alt="">
+      </div>
+      <input type="text" id="priceInput" placeholder="Enter price" style="padding: 1em; border-radius: 5px; font-size: 18px;margin-top: 8px;text-align: center;color: #0056b3;">
+      <div class="popup-buttons">
+        <button id="openButton">Save Price</button>
+        <button id="changeButton">Change</button>
+      </div>
+    </div>
+    
+  
+  <script src="./control.js"></script>
+  <!-- <script src="./script.js"></script> -->
+ 
+</body>
+</html>

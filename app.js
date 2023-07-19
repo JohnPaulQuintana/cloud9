@@ -5,7 +5,7 @@ const path = require('path');
 
 // Define the cases and their corresponding amounts
 const cases = {};
-for (let i = 1; i <= 50; i++) {
+for (let i = 1; i <= 20; i++) {
   cases[i] = i * 1000;
 }
 
@@ -20,7 +20,7 @@ function getRandomCase() {
 
 function initializeGame() {
   // Reset cases for a new game
-  for (let i = 1; i <= 50; i++) {
+  for (let i = 1; i <= 20; i++) {
     cases[i] = i * 1000;
   }
 }

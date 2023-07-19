@@ -24,7 +24,7 @@ body {
     align-items: center;
     width: 100%;
     min-height: 100vh;
-    background-image: url('./img/GRADBALL-\ 9X7.jpg');
+    background-image: url('./img/back.jpg');
     /* background-position: center; */
     background-repeat: no-repeat;
     background-size: cover;
@@ -128,8 +128,11 @@ body {
     grid-template-columns: repeat(10, 100px);
     grid-template-rows: repeat(5, 100px);
     width: fit-content;
+    height: 50vh;
+    border-radius: 15px;
     /* height: ; */
     padding: 1em;
+    padding-top: 5em;
     gap: 10px;
     background-color: rgba(255, 255, 255, 0.4); /* Transparent white background (adjust the last value between 0 and 1) */
     position: absolute;

@@ -2,7 +2,7 @@ const container = document.querySelector(".container");
 const startGame = document.getElementById("startGame");
 const gridContainer = document.getElementById("gameArea");
 let previousClickedElement = null;
-let numSelected = 0
+let numSelected = 0;
 
 // Event listener for "Start Game" button click
 startGame.addEventListener("click", async () => {
@@ -20,11 +20,11 @@ startGame.addEventListener("click", async () => {
         gridItem.textContent = `${caseNumber}`;
         gridItem.setAttribute("data-id", caseNumber);
 
-        const imgPrices = document.createElement('img')
-        imgPrices.classList.add('price')
-        imgPrices.setAttribute('src','')
+        const imgPrices = document.createElement("img");
+        imgPrices.classList.add("price");
+        imgPrices.setAttribute("src", "");
 
-        gridItem.appendChild(imgPrices)
+        gridItem.appendChild(imgPrices);
         gridContainer.appendChild(gridItem);
       });
 
@@ -35,14 +35,13 @@ startGame.addEventListener("click", async () => {
         container.classList.add("up");
         startGame.classList.add("hide");
         // Add your code to show the new content here, e.g., new game elements
-
       }, 500); // 1000 milliseconds = 1 second
 
       gridContainer.classList.add("faded");
       setTimeout(() => {
         gridContainer.classList.remove("faded");
         gridContainer.classList.add("show");
-        activeNumber()
+        activeNumber();
       }, 1000);
     })
     .catch((error) => console.error("Error fetching remaining cases:", error));
@@ -50,10 +49,8 @@ startGame.addEventListener("click", async () => {
 
 // Event delegation for grid items
 gridContainer.addEventListener("click", (event) => {
-
   const clickedElement = event.target;
   if (clickedElement.classList.contains("grid-item")) {
-      
     // If there is a previously clicked element, remove the class from it
     if (previousClickedElement) {
       previousClickedElement.classList.remove("sparkle-effect");
@@ -68,86 +65,105 @@ gridContainer.addEventListener("click", (event) => {
 });
 
 // Function to show the custom popup
-const showPopup = (selectedNumber) => {
-  const popupContainer = document.getElementById("popupContainer");
-  const openButton = document.getElementById("openButton");
-  const changeButton = document.getElementById("changeButton");
+let isButtonClicked = false;
+const popupContainer = document.getElementById("popupContainer");
+const openButton = document.getElementById("openButton");
+const changeButton = document.getElementById("changeButton");
+const closeButton = document.getElementById("closeButton");
+const selectedChestNumberElement = document.querySelector("#open");
+const selectedChestNumberContent = document.querySelector("#content");
+const selectedChestNumberPrice = document.querySelector("#price");
+const selectedChestNumberMessage = document.querySelector("#message");
+const winner = document.querySelector(".confetti");
+const setNumber = JSON.parse(localStorage.getItem("setPrice")) || [];
 
+// Store the timer IDs
+let timerId1, timerId2;
+const showPopup = (selectedNumber) => {
   // Show the popup
   popupContainer.style.display = "flex";
   // Show the selected chest number in the card
-  const selectedChestNumberElement = document.querySelector('#open');
-  const selectedChestNumberContent = document.querySelector('#content');
-  const selectedChestNumberPrice = document.querySelector('#price');
-  const selectedChestNumberMessage = document.querySelector('#message');
-  const winner = document.querySelector('.confetti');
-  const setNumber = JSON.parse(localStorage.getItem('setPrice')) || []
 
-  console.log(setNumber)
-  winner.style.display = 'none'
+  console.log(setNumber);
+  winner.style.display = "none";
   selectedChestNumberContent.textContent = selectedNumber.dataset.id;
-  selectedChestNumberElement.classList.add('sparkle-effect')
+  selectedChestNumberElement.classList.add("sparkle-effect");
 
-  numSelected = selectedNumber.dataset.id
+  numSelected = selectedNumber.dataset.id;
+
   // Event listener for the "Open" button
-  openButton.addEventListener("click", function onOpenButtonClick() {
-    console.log(numSelected)
-    // User chose "Open," so display the case number and amount
-    if (numSelected == selectedNumber.dataset.id) {
-      // alert(`You opened Case ${selectedNumber.dataset.id}`);
-       // static for now
-      selectedChestNumberContent.textContent = ''
+  openButton.addEventListener(
+    "click",
+    function onOpenButtonClick() {
+      console.log(numSelected);
+      // User chose "Open," so display the case number and amount
+      if (numSelected == selectedNumber.dataset.id) {
+        // alert(`You opened Case ${selectedNumber.dataset.id}`);
+        // static for now
+        selectedChestNumberContent.textContent = "";
 
-      const selectedCase = setNumber.find(
-        (setPrice) => parseInt(setPrice.caseNumber) === parseInt(numSelected)
-      );
-      console.log(selectedCase)
+        const selectedCase = setNumber.find(
+          (setPrice) => parseInt(setPrice.caseNumber) === parseInt(numSelected)
+        );
+        console.log(selectedCase);
         // console.log(`Case ${selectedCase.price} is an activeNumber.`);
-        if(selectedCase){
+        if (selectedCase) {
+          console.log(selectedCase);
           // set the price display
           // selectedNumber.style.backgroundImage = `url(./img/${selectedCase.price.toLowerCase()}.png)`;
           selectedChestNumberPrice.src = `./img/${selectedCase.price.toLowerCase()}.png`;
-          winner.style.display = 'block'
-          selectedChestNumberPrice.style.display = 'block'
-          selectedChestNumberMessage.textContent = `You Win a ${selectedCase.price.toLowerCase()}!`
-        }else{
+          winner.style.display = "block";
+          selectedChestNumberPrice.style.display = "block";
+          selectedChestNumberMessage.textContent = `You Won a ${selectedCase.price.toLowerCase()}!`;
+        } else {
           selectedChestNumberPrice.src = `./img/epcst.png`;
-          winner.style.display = 'none'
-          selectedChestNumberPrice.style.display = 'block'
-          selectedChestNumberMessage.textContent = 'Better Luck Next Time!'
+          winner.style.display = "none";
+          selectedChestNumberPrice.style.display = "block";
+          selectedChestNumberMessage.textContent = "Better Luck Next Time!";
         }
 
+        // selectedChestNumberPrice.src = `./img/${selectedNumber.dataset.id}.png`
 
-      // selectedChestNumberPrice.src = `./img/${selectedNumber.dataset.id}.png`
-     
-      
-      selectedChestNumberElement.classList.add('show')
-      
-      
-      selectedNumber.classList.add('sparkle-open')
-      // Retrieve the array of selected cases from local storage or create an empty array if it doesn't exist
-      const selectedCases =
-        JSON.parse(localStorage.getItem("selectedCases")) || [];
+        selectedChestNumberElement.classList.add("show");
 
-      // Add the current selected case to the array of selected cases
-      selectedCases.push({ caseNumber: selectedNumber.dataset.id, price: '0' });
+        selectedNumber.classList.add("sparkle-open");
+        // Retrieve the array of selected cases from local storage or create an empty array if it doesn't exist
+        const selectedCases =
+          JSON.parse(localStorage.getItem("selectedCases")) || [];
 
-      // Save the updated array of selected cases to local storage
-      localStorage.setItem("selectedCases", JSON.stringify(selectedCases));
-      numSelected = selectedNumber.dataset.id
+        // Add the current selected case to the array of selected cases
+        selectedCases.push({
+          caseNumber: selectedNumber.dataset.id,
+          price: "0",
+        });
 
-      activeNumber()
-      setTimeout(()=>{
-        selectedChestNumberPrice.src = ''
-        selectedChestNumberMessage.textContent = ''
-        selectedChestNumberPrice.style.display = 'none'
-        closePopup();
-      },5000)
-    }
+        // Save the updated array of selected cases to local storage
+        localStorage.setItem("selectedCases", JSON.stringify(selectedCases));
+        numSelected = selectedNumber.dataset.id;
 
-    // Remove the event listener for the "Open" button after it's clicked
-    openButton.removeEventListener("click", onOpenButtonClick);
-  }, { once: true });
+        activeNumber();
+
+        // closeButton.style.display = 'block'
+        // console.log(btnClose)
+
+        timerId1 = setTimeout(() => {
+          // selectedChestNumberPrice.src = ''
+          // selectedChestNumberMessage.textContent = ''
+          // selectedChestNumberPrice.style.display = 'none'
+          winner.style.display = "none";
+        }, 5000);
+
+        timerId2 = setTimeout(() => {
+          openButton.style.display = "none";
+          changeButton.style.display = "none";
+          closeButton.style.display = "block";
+        }, 100);
+      }
+      // Remove the event listener for the "Open" button after it's clicked
+      openButton.removeEventListener("click", onOpenButtonClick);
+    },
+    { once: true }
+  );
 
   // Event listener for the "Change" button
   changeButton.addEventListener("click", function onChangeButtonClick() {
@@ -163,7 +179,7 @@ const showPopup = (selectedNumber) => {
     );
     selectedElement.classList.add("sparkle-effect");
     numSelected = 0; // Reset the selectedCaseNumber after applying the sparkle effect
-    console.log(numSelected)
+    console.log(numSelected);
     closePopup();
 
     // Update the reference to the previously clicked element
@@ -172,52 +188,75 @@ const showPopup = (selectedNumber) => {
     // Remove the event listener for the "Change" button after it's clicked
     changeButton.removeEventListener("click", onChangeButtonClick);
   });
-   
 };
+
+// close function
+closeButton.addEventListener("click", function onCloseButtonClick() {
+  isButtonClicked = true;
+  console.log(isButtonClicked);
+
+  selectedChestNumberPrice.src = "";
+  selectedChestNumberMessage.textContent = "";
+  selectedChestNumberPrice.style.display = "none";
+  // winner.style.display = 'none'
+  openButton.style.display = "block";
+  changeButton.style.display = "block";
+  closeButton.style.display = "none";
+
+  // To reset the first setTimeout, you can use clearTimeout like this:
+clearTimeout(timerId1);
+clearTimeout(timerId2);
+  closePopup();
+  return true;
+
+  closeButton.removeEventListener("click", onCloseButtonClick);
+});
 // Function to close the custom popup
 const closePopup = () => {
   const popupContainer = document.getElementById("popupContainer");
   popupContainer.style.display = "none";
   previousClickedElement = null; // Reset the previousClickedElement after closing the popup
-  numSelected = 0
+  numSelected = 0;
 };
 
-const activeNumber = async()=>{
-  const activeNumber = JSON.parse(localStorage.getItem('selectedCases'))
-  const setNumber = JSON.parse(localStorage.getItem('setPrice'))
-  
-  console.log(activeNumber)
-  const cases = document.querySelectorAll('.grid-item')
-  if(activeNumber != null){
-    cases.forEach(active => {
+const activeNumber = async () => {
+  const activeNumber = JSON.parse(localStorage.getItem("selectedCases"));
+  const setNumber = JSON.parse(localStorage.getItem("setPrice"));
+
+  console.log(activeNumber);
+  const cases = document.querySelectorAll(".grid-item");
+  if (activeNumber != null) {
+    cases.forEach((active) => {
       const caseNumber = parseInt(active.dataset.id);
       // console.log(active)
-        // Check if the current case number is in the array of selected cases
-        if (activeNumber.some(selectedCase => parseInt(selectedCase.caseNumber) === caseNumber)) {
-          active.classList.add('sparkle-open')
-          // The current case number is an activeNumber (selected case)
-            // if(setNumber.some(setPrice => parseInt(setPrice.caseNumber) === caseNumber)){
-              // The current case number is an activeNumber (selected case)
-            const selectedCase = setNumber.find(
-              (setPrice) => parseInt(setPrice.caseNumber) === caseNumber
-            );
-              // console.log(`Case ${selectedCase.price} is an activeNumber.`);
-              if(selectedCase){
-    
-                // set the price display
-                active.style.backgroundImage = `url(./img/${selectedCase.price.toLowerCase()}.png)`;
-              }else{
-                active.style.backgroundImage = `url(./img/epcst.png)`;
-              }
-            // }
-            
-              active.style.backgroundSize = 'contain';
-              active.style.backgroundRepeat = 'no-repeat';
-              active.style.backgroundPosition = 'center';
-    
-              active.textContent = ''
+      // Check if the current case number is in the array of selected cases
+      if (
+        activeNumber.some(
+          (selectedCase) => parseInt(selectedCase.caseNumber) === caseNumber
+        )
+      ) {
+        active.classList.add("sparkle-open");
+        // The current case number is an activeNumber (selected case)
+        // if(setNumber.some(setPrice => parseInt(setPrice.caseNumber) === caseNumber)){
+        // The current case number is an activeNumber (selected case)
+        const selectedCase = setNumber.find(
+          (setPrice) => parseInt(setPrice.caseNumber) === caseNumber
+        );
+        // console.log(`Case ${selectedCase.price} is an activeNumber.`);
+        if (selectedCase) {
+          // set the price display
+          active.style.backgroundImage = `url(./img/${selectedCase.price.toLowerCase()}.png)`;
+        } else {
+          active.style.backgroundImage = `url(./img/epcst.png)`;
         }
+        // }
+
+        active.style.backgroundSize = "contain";
+        active.style.backgroundRepeat = "no-repeat";
+        active.style.backgroundPosition = "center";
+
+        active.textContent = "";
+      }
     });
   }
-}
-
+};
